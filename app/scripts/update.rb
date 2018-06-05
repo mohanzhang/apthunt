@@ -23,14 +23,21 @@ payload_to_css = {
   "Availability" => :availability
 }
 
+fetched = {} # avoid duplicates
+
 units.each do |unit|
   payload = {}
   payload_to_css.each do |k,v|
     payload[k] = unit.css(css_lookup.fetch(v)).text.strip
   end
 
+  unit_number = payload.fetch("Unit Number")
+  return if fetched[unit_number]
+
   image_url = doc.css('img[alt="Unit ' + payload.fetch("Unit Number") + '"]').attr('src').text
   payload["Floor Plan"] = image_url
   record = Apt.new(payload)
   record.create
+
+  fetched[unit_number] = true
 end
