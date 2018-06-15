@@ -8,6 +8,8 @@ class Apt < Airrecord::Table
 end
 
 def scrape_page(page)
+  puts "Now scraping page #{page}..."
+
   url = URI.join(ENV.fetch("BASE_URL"), "/floor-plans?unitrent_min=&unitrent_max=&bed_type%5B%5D=studio&bed_type%5B%5D=one&availability=0&floornumber_min=&floornumber_max=&wpv_filter_submit=Search&Page=#{page}")
   html = HTTParty.get(url)
   doc = Nokogiri::HTML(html)
@@ -42,6 +44,7 @@ def scrape_page(page)
 
     fetched[unit_number] = true
   end
+  puts "Finished scraping page #{page}."
 end
 
 scrape_page(1)
